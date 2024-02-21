@@ -22,11 +22,15 @@ puppeteer.launch({
 	]
 }).then(async browser => {
 	const page = await browser.newPage();
-	page.setViewport({
-		width: 0,
-		height: 0,
-		deviceScaleFactor: 0
-	})
+
+	// get screen size
+	await page.goto('about:blank');
+
+	const width = await page.evaluate('screen.width');
+	const height = await page.evaluate('screen.height');
+
+	// apply viewport size
+	page.setViewport({ width, height });
 
 	const reload = async () => {
 		try {
