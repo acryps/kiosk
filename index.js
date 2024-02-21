@@ -30,6 +30,7 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 
 console.log(`attaching to browser...`);
 
+// wait for puppeteer to connect to browser
 const connect = new Promise(async done => {
 	try {
 		await puppeteer.connect({
