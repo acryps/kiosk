@@ -20,8 +20,6 @@ console.log(`launching browser on '${location}' as '${os.userInfo().username}' a
 
 // launch browser
 const browserProcess = task.spawn(puppeteer.executablePath(), [
-	'--kiosk', 
-	'--disable-infobars',
 	`--remote-debugging-port=${port}`,
 	'--no-first-run',
 	'--no-default-browser-check',
