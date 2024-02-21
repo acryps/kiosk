@@ -26,6 +26,12 @@ puppeteer.launch({
 }).then(async browser => {
 	const page = await browser.newPage();
 
+	// using CDP to hide the automation banner
+	const cdpSession = await page.createCDPSession();
+	await cdpSession.send('Page.addScriptToEvaluateOnNewDocument', {
+		source: `Object.defineProperty(navigator, 'webdriver', {get: () => undefined})`
+	});
+
 	// get screen size
 	await page.goto('about:blank');
 	await page.evaluate('document.body.style.background = "grey"');
