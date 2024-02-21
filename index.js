@@ -22,6 +22,12 @@ puppeteer.launch({
 	]
 }).then(async browser => {
 	const page = await browser.newPage();
+
+	// Using CDP to hide the automation banner
+	const cdpSession = await page.createCDPSession();
+	await cdpSession.send('Page.addScriptToEvaluateOnNewDocument', {
+		source: `Object.defineProperty(navigator, 'webdriver', {get: () => undefined})`
+	});
 	
 	const reload = async () => {
 		try {
