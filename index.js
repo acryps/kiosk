@@ -33,15 +33,15 @@ console.log(`attaching to browser...`);
 // wait for puppeteer to connect to browser
 const connect = () => new Promise(async done => {
 	try {
-		await puppeteer.connect({
+		const browser = await puppeteer.connect({
 			browserURL: `http://127.0.0.1:${port}`
 		});
 
-		done();
+		done(browser);
 	} catch (error) {
 		console.warn(`could not attach: ${error}, retrying...`);
 
-		setTimeout(() => connect().then(() => done()), 1000);
+		setTimeout(() => connect().then(browser => done(browser)), 1000);
 	}
 });
 
