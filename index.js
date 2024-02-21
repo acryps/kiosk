@@ -29,7 +29,7 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 browserProcess.on('spawn', () => {
 	console.log(`attaching to browser...`);
 
-	puppeteer.launch({
+	puppeteer.connect({
 		browserURL: `http://localhost:${port}`
 	}).then(async browser => {
 		const page = (await browser.pages())[0];
