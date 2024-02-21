@@ -38,7 +38,9 @@ const connect = () => new Promise(async done => {
 		});
 
 		done();
-	} catch {
+	} catch (error) {
+		console.warn(`could not attach: ${error}, retrying...`);
+
 		setTimeout(() => connect().then(() => done()), 1000);
 	}
 });
