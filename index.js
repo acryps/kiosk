@@ -22,7 +22,10 @@ console.log(`launching browser on '${location}' as '${os.userInfo().username}' a
 const browserProcess = task.spawn(puppeteer.executablePath(), [
 	'--kiosk', 
 	'--disable-infobars',
-	`--remote-debugging-port=${port}`
+	`--remote-debugging-port=${port}`,
+	'--no-first-run',
+	'--no-default-browser-check',
+	'about:blank'
 ]);
 
 browserProcess.on('spawn', () => {
@@ -31,7 +34,7 @@ browserProcess.on('spawn', () => {
 	puppeteer.launch({
 		browserURL: `http://localhost:${port}`
 	}).then(async browser => {
-		const page = await browser.newPage();
+		const page = (await browser.pages())[0];
 	
 		// add clear screen
 		await page.goto('about:blank');
