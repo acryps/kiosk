@@ -8,8 +8,8 @@ Example usage in a start script
 #!/bin/sh
 
 # install the latest version on startup
-npm install @acryps/kiosk@latest
+npm install --global @acryps/kiosk@latest
 
 # show the cloud page
-npx kiosk https://acryps.com/cloud
+kiosk https://acryps.com/cloud
 ```
