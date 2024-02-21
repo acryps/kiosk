@@ -3,6 +3,7 @@
 const puppeteer = require('puppeteer');
 const os = require('os');
 const task = require('child_process');
+const net = require('net');
 
 const location = process.argv[2];
 
@@ -27,37 +28,44 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 	'about:blank'
 ]);
 
-browserProcess.on('spawn', () => {
-	console.log(`attaching to browser...`);
+console.log(`attaching to browser...`);
 
-	puppeteer.connect({
-		browserURL: `http://localhost:${port}`
-	}).then(async browser => {
-		const page = (await browser.pages())[0];
-	
-		// add clear screen
-		await page.goto('about:blank');
-		await page.evaluate('document.body.style.background = "grey"');
-	
-		const reload = async () => {
-			try {
-				const response = await page.goto(location);
-	
-				if (response.status() < 200 || response.status() >= 300) {
-					console.warn(`could not load, page returned status code '${response.status()}'`);
-	
-					return setTimeout(() => reload(), 5000);
-				}
-			} catch (error) {
-				console.warn(`could not load: '${error}'`);
-	
+let output = '';
+await new Promise(done => browserProcess.stdout.on('data', message => {
+	output += message;
+
+	if (output.includes('DevTools listening')) {
+		done();
+	}
+}))
+
+puppeteer.connect({
+	browserURL: `http://localhost:${port}`
+}).then(async browser => {
+	const page = (await browser.pages())[0];
+
+	// add clear screen
+	await page.goto('about:blank');
+	await page.evaluate('document.body.style.background = "grey"');
+
+	const reload = async () => {
+		try {
+			const response = await page.goto(location);
+
+			if (response.status() < 200 || response.status() >= 300) {
+				console.warn(`could not load, page returned status code '${response.status()}'`);
+
 				return setTimeout(() => reload(), 5000);
 			}
-	
-			console.log('loaded page');
-		};
-	
-		console.log('loading page...');
-		reload();
-	});
+		} catch (error) {
+			console.warn(`could not load: '${error}'`);
+
+			return setTimeout(() => reload(), 5000);
+		}
+
+		console.log('loaded page');
+	};
+
+	console.log('loading page...');
+	reload();
 });
