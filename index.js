@@ -31,9 +31,6 @@ puppeteer.launch({
 	await page.goto('about:blank');
 	await page.evaluate('document.body.style.background = "grey"');
 
-	// apply viewport size
-	page.setViewport({ width, height });
-
 	const reload = async () => {
 		try {
 			const response = await page.goto(location);
