@@ -52,6 +52,13 @@ connect().then(async browser => {
 	await page.goto('about:blank');
 	await page.evaluate('document.body.style.background = "grey"');
 
+	// get screen size
+	const width = await page.evaluate('screen.width');
+	const height = await page.evaluate('screen.height');
+
+	// apply viewport size
+	page.setViewport({ width, height });
+
 	const reload = async () => {
 		try {
 			const response = await page.goto(location);
