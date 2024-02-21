@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const puppeteer = require('puppeteer');
+const os = require('os');
 
 const location = process.argv[2];
 
@@ -12,7 +13,7 @@ if (!location) {
 // check if the url is valid
 new URL(location);
 
-console.log(`opening kiosk for '${location}'`);
+console.log(`opening kiosk for '${location}' as '${os.userInfo().username}'`);
 
 // launch browser
 puppeteer.launch({

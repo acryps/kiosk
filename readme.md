@@ -32,10 +32,8 @@ apt install -y nodejs npm chromium
 
 # create launch file
 echo '#!/bin/sh' > $LAUNCH_SCRIPT_LOCATION
-echo "export DISPLAY=:0" >> $LAUNCH_SCRIPT_LOCATION
-echo "export PUPPETEER_EXECUTABLE_PATH=$(which chromium)"
 echo 'npm install --global @acryps/kiosk@latest' >> $LAUNCH_SCRIPT_LOCATION
-echo "sudo -u $BROWSER_USER kiosk $URL" >> $LAUNCH_SCRIPT_LOCATION
+echo "sudo -u $BROWSER_USER DISPLAY=:0 PUPPETEER_EXECUTABLE_PATH=$(which chromium) kiosk $URL" >> $LAUNCH_SCRIPT_LOCATION
 chmod +x $LAUNCH_SCRIPT_LOCATION
 
 # create launch service
