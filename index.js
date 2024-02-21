@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const puppeteer = require('puppeteer');
-const task = require('child_process');
 
 const location = process.argv[2];
 
@@ -13,25 +12,22 @@ if (!location) {
 // check if the url is valid
 new URL(location);
 
-// find port
-const port = 9000 + Math.floor(20000 * Math.random());
-
-console.log(`launching browser on '${location}' attached to :${port}`);
+console.log(`opening kiosk for '${location}'`);
 
 // launch browser
-const browserProcess = task.spawn(puppeteer.executablePath(), [
-	'--kiosk', 
-	'--disable-infobars',
-	`--remote-debugging-port=${port}`
-]);
-
 puppeteer.launch({
-	browserURL: `http://localhost:${port}`
+	headless: false,
+	args: [
+		'--kiosk', 
+		'--start-fullscreen',
+		'--disable-infobars'
+	]
 }).then(async browser => {
 	const page = await browser.newPage();
 
 	// get screen size
 	await page.goto('about:blank');
+	await page.evaluate('document.body.style.background = "grey"');
 
 	const width = await page.evaluate('screen.width');
 	const height = await page.evaluate('screen.height');
