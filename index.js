@@ -56,7 +56,7 @@ connect().then(async browser => {
 		try {
 			const response = await page.goto(location);
 
-			if (response.status() < 200 || response.status() >= 300) {
+			if (response.status() < 200 || response.status() >= 400) {
 				console.warn(`could not load, page returned status code '${response.status()}'`);
 
 				return setTimeout(() => reload(), 5000);
