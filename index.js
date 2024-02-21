@@ -2,6 +2,7 @@
 
 const puppeteer = require('puppeteer');
 const os = require('os');
+const task = require('child_process');
 
 const location = process.argv[2];
 
@@ -13,42 +14,48 @@ if (!location) {
 // check if the url is valid
 new URL(location);
 
-console.log(`opening kiosk for '${location}' as '${os.userInfo().username}'`);
+// find port
+const port = 9000 + Math.floor(20000 * Math.random());
+console.log(`launching browser on '${location}' as '${os.userInfo().username}' attached to :${port}`);
 
 // launch browser
-puppeteer.launch({
-	headless: false,
-	args: [
-		'--kiosk', 
-		'--start-fullscreen',
-		'--incognito'
-	],
-	ignoreDefaultArgs: ['--enable-automation']
-}).then(async browser => {
-	const page = await browser.newPage();
+const browserProcess = task.spawn(puppeteer.executablePath(), [
+	'--kiosk', 
+	'--disable-infobars',
+	`--remote-debugging-port=${port}`
+]);
 
-	// add clear screen
-	await page.goto('about:blank');
-	await page.evaluate('document.body.style.background = "grey"');
+browserProcess.on('spawn', () => {
+	console.log(`attaching to browser...`);
 
-	const reload = async () => {
-		try {
-			const response = await page.goto(location);
-
-			if (response.status() < 200 || response.status() >= 300) {
-				console.warn(`could not load, page returned status code '${response.status()}'`);
-
+	puppeteer.launch({
+		browserURL: `http://localhost:${port}`
+	}).then(async browser => {
+		const page = await browser.newPage();
+	
+		// add clear screen
+		await page.goto('about:blank');
+		await page.evaluate('document.body.style.background = "grey"');
+	
+		const reload = async () => {
+			try {
+				const response = await page.goto(location);
+	
+				if (response.status() < 200 || response.status() >= 300) {
+					console.warn(`could not load, page returned status code '${response.status()}'`);
+	
+					return setTimeout(() => reload(), 5000);
+				}
+			} catch (error) {
+				console.warn(`could not load: '${error}'`);
+	
 				return setTimeout(() => reload(), 5000);
 			}
-		} catch (error) {
-			console.warn(`could not load: '${error}'`);
-
-			return setTimeout(() => reload(), 5000);
-		}
-
-		console.log('loaded page');
-	};
-
-	console.log('loading page...');
-	reload();
+	
+			console.log('loaded page');
+		};
+	
+		console.log('loading page...');
+		reload();
+	});
 });
