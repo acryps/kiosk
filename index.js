@@ -16,7 +16,10 @@ console.log(`opening kiosk for '${location}'`);
 
 puppeteer.launch({
 	headless: false,
-	args: ['--kiosk']
+	args: [
+		'--kiosk', 
+		'--disable-infobars'
+	]
 }).then(async browser => {
 	const page = await browser.newPage();
 	
