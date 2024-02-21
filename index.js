@@ -30,18 +30,19 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 
 console.log(`attaching to browser...`);
 
-let output = '';
-await new Promise(done => browserProcess.stdout.on('data', message => {
-	output += message;
+const connect = new Promise(async done => {
+	try {
+		await puppeteer.connect({
+			browserURL: `http://localhost:${port}`
+		});
 
-	if (output.includes('DevTools listening')) {
 		done();
+	} catch {
+		setTimeout(() => connect().then(() => done()), 1000);
 	}
-}))
+});
 
-puppeteer.connect({
-	browserURL: `http://localhost:${port}`
-}).then(async browser => {
+connect().then(async browser => {
 	const page = (await browser.pages())[0];
 
 	// add clear screen
