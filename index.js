@@ -16,7 +16,7 @@ if (!location) {
 new URL(location);
 
 // find port
-const port = 9000 + Math.floor(20000 * Math.random());
+const port = 21222;
 console.log(`launching browser on '${location}' as '${os.userInfo().username}' attached to :${port}`);
 
 // launch browser
@@ -34,7 +34,7 @@ console.log(`attaching to browser...`);
 const connect = () => new Promise(async done => {
 	try {
 		await puppeteer.connect({
-			browserURL: `http://localhost:${port}`
+			browserURL: `http://127.0.0.1:${port}`
 		});
 
 		done();
