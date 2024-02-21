@@ -18,18 +18,16 @@ puppeteer.launch({
 	headless: false,
 	args: [
 		'--kiosk', 
-		'--start-fullscreen',
 		'--disable-infobars'
 	]
 }).then(async browser => {
 	const page = await browser.newPage();
+	page.setViewport({
+		width: 0,
+		height: 0,
+		deviceScaleFactor: 0
+	})
 
-	// Using CDP to hide the automation banner
-	const cdpSession = await page.createCDPSession();
-	await cdpSession.send('Page.addScriptToEvaluateOnNewDocument', {
-		source: `Object.defineProperty(navigator, 'webdriver', {get: () => undefined})`
-	});
-	
 	const reload = async () => {
 		try {
 			const response = await page.goto(location);
