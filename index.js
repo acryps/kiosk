@@ -18,6 +18,7 @@ puppeteer.launch({
 	headless: false,
 	args: [
 		'--kiosk', 
+		'--start-fullscreen',
 		'--disable-infobars'
 	]
 }).then(async browser => {
