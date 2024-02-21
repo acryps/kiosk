@@ -35,7 +35,7 @@ echo '#!/bin/sh' > $LAUNCH_SCRIPT_LOCATION
 echo "export DISPLAY=:0" >> $LAUNCH_SCRIPT_LOCATION
 echo "export PUPPETEER_EXECUTABLE_PATH=$(which chromium)"
 echo 'npm install --global @acryps/kiosk@latest' >> $LAUNCH_SCRIPT_LOCATION
-echo "kiosk $URL" >> $LAUNCH_SCRIPT_LOCATION
+echo "sudo -u $BROWSER_USER kiosk $URL" >> $LAUNCH_SCRIPT_LOCATION
 chmod +x $LAUNCH_SCRIPT_LOCATION
 
 # create launch service
@@ -43,8 +43,6 @@ echo "[Unit]" > $SERVICE_FILE
 echo "Description=Kiosk Browser" >> $SERVICE_FILE
 echo >> $SERVICE_FILE
 echo "[Service]" >> $SERVICE_FILE
-echo "User=$BROWSER_USER" >> $SERVICE_FILE
-echo "Group=$BROWSER_USER" >> $SERVICE_FILE
 echo "ExecStart=$LAUNCH_SCRIPT_LOCATION" >> $SERVICE_FILE
 echo >> $SERVICE_FILE
 echo "[Install]" >> $SERVICE_FILE
