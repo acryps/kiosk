@@ -21,19 +21,15 @@ puppeteer.launch({
 	args: [
 		'--kiosk', 
 		'--start-fullscreen',
-		'--incognito',
-		'--ignore-certificate-errors',
-		'--test-type=webdriver'
-	]
+		'--incognito'
+	],
+	ignoreDefaultArgs: ['--enable-automation']
 }).then(async browser => {
 	const page = await browser.newPage();
 
-	// get screen size
+	// add clear screen
 	await page.goto('about:blank');
 	await page.evaluate('document.body.style.background = "grey"');
-
-	const width = await page.evaluate('screen.width');
-	const height = await page.evaluate('screen.height');
 
 	// apply viewport size
 	page.setViewport({ width, height });
