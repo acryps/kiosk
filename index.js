@@ -21,16 +21,12 @@ puppeteer.launch({
 	args: [
 		'--kiosk', 
 		'--start-fullscreen',
-		'--disable-infobars'
+		'--incognito',
+		'--ignore-certificate-errors',
+		'--test-type=webdriver'
 	]
 }).then(async browser => {
 	const page = await browser.newPage();
-
-	// using CDP to hide the automation banner
-	const cdpSession = await page.createCDPSession();
-	await cdpSession.send('Page.addScriptToEvaluateOnNewDocument', {
-		source: `Object.defineProperty(navigator, 'webdriver', {get: () => undefined})`
-	});
 
 	// get screen size
 	await page.goto('about:blank');
