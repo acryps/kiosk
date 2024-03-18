@@ -1,0 +1,47 @@
+#!/bin/bash
+
+URL=https://acryps.com/
+LAUNCH_SCRIPT_LOCATION=/boot/kiosk
+SERVICE_NAME=kiosk
+SERVICE_FILE=/etc/systemd/system/$SERVICE_NAME.service
+BROWSER_USER=$(ls /home/ | head -n 1)
+
+# enable autologin
+echo >> /etc/lightdm/lightdm.conf
+echo '[Seat:*]' >> /etc/lightdm/lightdm.conf
+echo "autologin-user=$BROWSER_USER" >> /etc/lightdm/lightdm.conf
+echo "autologin-user-timeout=0" >> /etc/lightdm/lightdm.conf
+
+# disable screen saver
+apt remove xscreensaver light-locker -y
+
+# install nodejs and npm
+apt install -y nodejs npm chromium unclutter
+
+# create launch file
+echo '#!/bin/sh' > $LAUNCH_SCRIPT_LOCATION
+echo 'npm install --global @acryps/kiosk@latest' >> $LAUNCH_SCRIPT_LOCATION
+
+# OPTIONAL: hide cursor
+echo 'unclutter -idle 0 &' >> $LAUNCH_SCRIPT_LOCATION
+
+# OPTIONAL: turn screen
+echo ''
+
+echo "sudo -u $BROWSER_USER DISPLAY=:0 PUPPETEER_EXECUTABLE_PATH=$(which chromium) kiosk $URL" >> $LAUNCH_SCRIPT_LOCATION
+chmod +x $LAUNCH_SCRIPT_LOCATION
+
+# create launch service
+echo "[Unit]" > $SERVICE_FILE
+echo "Description=Kiosk Browser" >> $SERVICE_FILE
+echo >> $SERVICE_FILE
+echo "[Service]" >> $SERVICE_FILE
+echo "ExecStart=$LAUNCH_SCRIPT_LOCATION" >> $SERVICE_FILE
+echo >> $SERVICE_FILE
+echo "[Install]" >> $SERVICE_FILE
+echo "WantedBy=multi-user.target" >> $SERVICE_FILE
+
+# activate service
+systemctl start $SERVICE_NAME.service
+systemctl enable $SERVICE_NAME.service
+```
