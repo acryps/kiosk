@@ -65,8 +65,16 @@ connect().then(async browser => {
 
 	// apply viewport size
 	page.setViewport({ width, height });
+	
+	let aliveWatcher = setInterval(() => {}, 1000);
 
 	const reload = async () => {
+		clearInterval(aliveWatcher);
+		
+		// clear screen
+		await page.goto('about:blank');
+		await page.evaluate('document.body.style.background = "darkgrey"');
+		
 		try {
 			const response = await page.goto(location);
 
@@ -82,6 +90,23 @@ connect().then(async browser => {
 		}
 
 		console.log('loaded page');
+		
+		// start alive watcher
+		clearInterval(aliveWatcher);
+		
+		aliveWatcher = setInterval(async () => {
+			try {
+				const response = await page.evaluate('kioskAlive()');
+				
+				if (!response) {
+					throw new Error(`window.kioskAlive() returned '${response}', expected 'true'`);
+				}
+			} catch (error) {
+				console.warn(`page health check failed: ${error}`);
+				
+				reload();
+			}
+		}, 1000);
 	};
 
 	console.log('loading page...');
