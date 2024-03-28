@@ -17,13 +17,22 @@ npm install --global @acryps/kiosk@latest
 kiosk https://acryps.com/cloud
 ```
 
-Add this code to your website, which will be called periodically to ensure that the page is working.
-The page will be reloaded if the function returns an error or a negative value.
+Add a `window.kioskAlive()` function to your website, which will be called every second to ensure that the page is working.
+The page will be reloaded if the function returns an error or a non `true` value.
 The function is not awaited, it must return a value immediately.
 
 The screen will turn dark gray if the health check failed and the page is trying to reload.
 ```
+// just make sure that the page loaded
 (globalThis as any).kioskAlive = () => true;
+
+// fail if the network connection is broken
+(globalThis as any).kioskAlive = () => navigator.online;
+
+// fail when the first unhandled error occurs
+window.onerror = () => {
+	delete (globalThis as any).kioskAlive;
+};
 ```
 
 ## Full setup guide
