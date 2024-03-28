@@ -27,7 +27,7 @@ The screen will turn dark gray if the health check failed and the page is trying
 (globalThis as any).kioskAlive = () => true;
 
 // fail if the network connection is broken
-(globalThis as any).kioskAlive = () => navigator.online;
+(globalThis as any).kioskAlive = () => navigator.onLine;
 
 // fail when the first unhandled error occurs
 window.onerror = () => {
