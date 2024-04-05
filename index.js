@@ -6,6 +6,7 @@ const task = require('child_process');
 const net = require('net');
 
 const location = process.argv[2];
+const flags = process.argv.slice(3);
 
 // check if a url is set
 if (!location) {
@@ -31,6 +32,8 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 	
 	// puppeteer connection
 	`--remote-debugging-port=${port}`,
+	
+	...flags,
 	
 	'about:blank'
 ]);

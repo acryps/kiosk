@@ -14,7 +14,7 @@ export DISPLAY=:0
 npm install --global @acryps/kiosk@latest
 
 # show the cloud page
-kiosk https://acryps.com/cloud
+kiosk https://acryps.com/cloud --some-chrome-option
 ```
 
 Add a `window.kioskAlive()` function to your website, which will be called every second to ensure that the page is working.
