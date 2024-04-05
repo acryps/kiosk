@@ -44,4 +44,3 @@ echo "WantedBy=multi-user.target" >> $SERVICE_FILE
 # activate service
 systemctl start $SERVICE_NAME.service
 systemctl enable $SERVICE_NAME.service
-```
