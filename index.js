@@ -18,7 +18,7 @@ new URL(location);
 
 // find port
 const port = 21222;
-console.log(`launching browser on '${location}' as '${os.userInfo().username}' attached to :${port}`);
+console.log(`launching browser '${puppeteer.executablePath()}' [${flags.map(flag => `'${flag}'`).join(', ') || '<no flags>'}] on '${location}' as '${os.userInfo().username}' attached to :${port}`);
 
 // launch browser
 const browserProcess = task.spawn(puppeteer.executablePath(), [
