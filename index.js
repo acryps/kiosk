@@ -38,6 +38,10 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 	'about:blank'
 ]);
 
+// pipe browser logs to console
+browserProcess.stdout.on('data', data => process.stdout.write(data));
+browserProcess.stderr.on('data', data => process.stdout.write(data));
+
 console.log(`attaching to browser...`);
 
 // wait for puppeteer to connect to browser
