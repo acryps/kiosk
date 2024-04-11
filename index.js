@@ -35,12 +35,16 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 	
 	// enable verbose mode to debug any issues with the kiosk
 	'--enable-logging=stderr',
-	'--v=2',
+	'--v=3',
 	
 	...flags,
 	
 	'about:blank'
-]);
+], {
+	env: process.env
+});
+
+console.log(process.env);
 
 // pipe browser logs to console
 browserProcess.stdout.on('data', data => process.stdout.write(data));
