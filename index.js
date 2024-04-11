@@ -34,7 +34,7 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 	`--remote-debugging-port=${port}`,
 	
 	// enable verbose mode to debug any issues with the kiosk
-	'--enable-logging=stderrr',
+	'--enable-logging=stderr',
 	'--v=2',
 	
 	...flags,
