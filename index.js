@@ -26,9 +26,10 @@ const browserProcess = task.spawn(puppeteer.executablePath(), [
 	'--kiosk',
 	'--disable-pinch',
 	
-	// disable popups
+	// disable popups & info bars
 	'--no-first-run',
 	'--no-default-browser-check',
+	'--disable-infobars',
 	
 	// puppeteer connection
 	`--remote-debugging-port=${port}`,
